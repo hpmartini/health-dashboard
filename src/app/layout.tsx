@@ -1,21 +1,27 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
-  title: 'Health Dashboard',
-  description: 'Personal health & nutrition tracking',
-}
+  title: "Health Dashboard",
+  description: "Personal health & nutrition tracker",
+};
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="de">
-      <body className="min-h-screen bg-gray-950 text-white">
+    <html lang="de" className="dark">
+      <body className={`${inter.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>
-  )
+  );
 }
