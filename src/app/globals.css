@@ -7,207 +7,173 @@
 @tailwind utilities;
 
 /* ============================================
-   HEALTH DASHBOARD - GLASSMORPHISM THEME
+   HEALTH DASHBOARD - FIXED DARK MODE
+   iOS-Style Dark Mode with proper contrast
    ============================================ */
 
 body {
   font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
   min-height: 100vh;
+  /* Pure black background like iOS */
+  background-color: #000000;
+  color: #FFFFFF;
+  /* Safe area padding for mobile browsers */
+  padding-bottom: env(safe-area-inset-bottom, 100px);
 }
 
-/* Animated Gradient Background */
-.bg-gradient-animated {
-  background: linear-gradient(
-    135deg,
-    oklch(0.15 0.02 260) 0%,
-    oklch(0.12 0.03 280) 25%,
-    oklch(0.14 0.02 300) 50%,
-    oklch(0.11 0.025 240) 75%,
-    oklch(0.13 0.02 260) 100%
-  );
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+/* iOS-Style Cards - Dark gray on black */
+.card {
+  background-color: #1C1C1E;
+  border-radius: 16px;
+  border: none;
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Macro Card Variants with subtle color tint */
+.card-calories {
+  background: linear-gradient(135deg, #1a2f1a 0%, #1C1C1E 100%);
 }
 
-/* Glassmorphism Cards */
-.glass {
-  background: oklch(1 0 0 / 5%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid oklch(1 0 0 / 10%);
-  box-shadow: 
-    0 4px 24px oklch(0 0 0 / 20%),
-    inset 0 1px 0 oklch(1 0 0 / 5%);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.card-protein {
+  background: linear-gradient(135deg, #1a1a2f 0%, #1C1C1E 100%);
 }
 
-.glass:hover {
-  background: oklch(1 0 0 / 8%);
-  border-color: oklch(1 0 0 / 15%);
-  transform: translateY(-2px);
-  box-shadow: 
-    0 8px 32px oklch(0 0 0 / 30%),
-    inset 0 1px 0 oklch(1 0 0 / 8%);
+.card-carbs {
+  background: linear-gradient(135deg, #2f2a1a 0%, #1C1C1E 100%);
 }
 
-/* Gradient Cards */
-.card-gradient-green {
-  background: linear-gradient(135deg, oklch(0.45 0.15 145 / 20%) 0%, oklch(0.35 0.1 160 / 10%) 100%);
-  border-color: oklch(0.5 0.15 145 / 30%);
+.card-fat {
+  background: linear-gradient(135deg, #2f1a1a 0%, #1C1C1E 100%);
 }
 
-.card-gradient-blue {
-  background: linear-gradient(135deg, oklch(0.5 0.15 250 / 20%) 0%, oklch(0.4 0.12 270 / 10%) 100%);
-  border-color: oklch(0.55 0.15 250 / 30%);
+.card-weight {
+  background: linear-gradient(135deg, #251a2f 0%, #1C1C1E 100%);
 }
 
-.card-gradient-amber {
-  background: linear-gradient(135deg, oklch(0.6 0.15 80 / 20%) 0%, oklch(0.5 0.12 70 / 10%) 100%);
-  border-color: oklch(0.65 0.15 80 / 30%);
+/* Text Colors - WHITE on dark */
+.text-primary {
+  color: #FFFFFF;
 }
 
-.card-gradient-rose {
-  background: linear-gradient(135deg, oklch(0.55 0.18 10 / 20%) 0%, oklch(0.45 0.15 350 / 10%) 100%);
-  border-color: oklch(0.6 0.18 10 / 30%);
+.text-secondary {
+  color: #8E8E93;
 }
 
-.card-gradient-purple {
-  background: linear-gradient(135deg, oklch(0.5 0.2 300 / 20%) 0%, oklch(0.4 0.15 280 / 10%) 100%);
-  border-color: oklch(0.55 0.2 300 / 30%);
+.text-tertiary {
+  color: #636366;
 }
 
-/* Progress Bar Gradients */
-.progress-green {
-  background: linear-gradient(90deg, oklch(0.65 0.2 145) 0%, oklch(0.7 0.18 160) 100%);
-}
+/* Accent Colors */
+.accent-green { color: #30D158; }
+.accent-blue { color: #0A84FF; }
+.accent-orange { color: #FF9F0A; }
+.accent-red { color: #FF453A; }
+.accent-purple { color: #BF5AF2; }
 
-.progress-blue {
-  background: linear-gradient(90deg, oklch(0.6 0.2 250) 0%, oklch(0.65 0.18 270) 100%);
-}
+/* Progress Ring Colors */
+.ring-green { stroke: #30D158; }
+.ring-blue { stroke: #0A84FF; }
+.ring-orange { stroke: #FF9F0A; }
+.ring-red { stroke: #FF453A; }
 
-.progress-amber {
-  background: linear-gradient(90deg, oklch(0.75 0.18 80) 0%, oklch(0.8 0.16 70) 100%);
-}
-
-.progress-rose {
-  background: linear-gradient(90deg, oklch(0.65 0.22 10) 0%, oklch(0.7 0.2 350) 100%);
-}
-
-/* Circular Progress */
+/* Progress Ring */
 .progress-ring {
   transform: rotate(-90deg);
 }
 
 .progress-ring circle {
-  transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: stroke-dashoffset 0.6s ease-out;
 }
 
-/* Tab Styles */
-.tab-glass {
-  background: oklch(1 0 0 / 5%);
-  border: 1px solid oklch(1 0 0 / 10%);
-  backdrop-filter: blur(10px);
+/* Segmented Control - Dark Mode Style */
+.segmented-control {
+  background-color: #1C1C1E;
+  border-radius: 10px;
+  padding: 2px;
 }
 
-.tab-active {
-  background: oklch(1 0 0 / 15%);
-  border-color: oklch(1 0 0 / 20%);
+.segmented-control button {
+  color: #8E8E93;
+  border-radius: 8px;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
 }
 
-/* Spacing System - 8px grid */
-:root {
-  --space-1: 0.25rem;  /* 4px */
-  --space-2: 0.5rem;   /* 8px */
-  --space-3: 0.75rem;  /* 12px */
-  --space-4: 1rem;     /* 16px */
-  --space-5: 1.25rem;  /* 20px */
-  --space-6: 1.5rem;   /* 24px */
-  --space-8: 2rem;     /* 32px */
-  --space-10: 2.5rem;  /* 40px */
-  --space-12: 3rem;    /* 48px */
+.segmented-control button.active {
+  background-color: #3A3A3C;
+  color: #FFFFFF;
 }
 
-/* Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* List Items */
+.list-item {
+  background-color: #1C1C1E;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 8px;
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.4s ease-out forwards;
+.list-item:active {
+  background-color: #2C2C2E;
 }
 
-.animate-delay-100 { animation-delay: 100ms; }
-.animate-delay-200 { animation-delay: 200ms; }
-.animate-delay-300 { animation-delay: 300ms; }
-.animate-delay-400 { animation-delay: 400ms; }
+/* Progress Bar */
+.progress-track {
+  background-color: #3A3A3C;
+  border-radius: 4px;
+  height: 8px;
+}
 
-/* Glow Effects */
-.glow-green { box-shadow: 0 0 20px oklch(0.65 0.2 145 / 40%); }
-.glow-blue { box-shadow: 0 0 20px oklch(0.6 0.2 250 / 40%); }
-.glow-amber { box-shadow: 0 0 20px oklch(0.75 0.18 80 / 40%); }
-.glow-rose { box-shadow: 0 0 20px oklch(0.65 0.22 10 / 40%); }
+.progress-fill {
+  border-radius: 4px;
+  height: 100%;
+  transition: width 0.5s ease-out;
+}
 
-/* Custom Scrollbar */
+.progress-fill-green { background-color: #30D158; }
+.progress-fill-blue { background-color: #0A84FF; }
+.progress-fill-orange { background-color: #FF9F0A; }
+.progress-fill-red { background-color: #FF453A; }
+
+/* Scrollbar - Minimal */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: oklch(1 0 0 / 5%);
-  border-radius: 3px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: oklch(1 0 0 / 20%);
-  border-radius: 3px;
+  background: #3A3A3C;
+  border-radius: 2px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: oklch(1 0 0 / 30%);
+/* Safe Area Utility */
+.pb-safe {
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
-/* Theme Variables */
+/* Theme Variables for shadcn */
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
-  --color-ring: var(--ring);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --color-background: #000000;
+  --color-foreground: #FFFFFF;
+  --color-card: #1C1C1E;
+  --color-card-foreground: #FFFFFF;
+  --color-muted: #3A3A3C;
+  --color-muted-foreground: #8E8E93;
+  --color-border: #3A3A3C;
 }
 
 :root {
-  --radius: 1rem;
-  --background: oklch(0.13 0.02 260);
-  --foreground: oklch(0.95 0 0);
-  --card: oklch(1 0 0 / 5%);
-  --card-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.7 0.15 250);
-  --primary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.25 0.02 260);
-  --muted-foreground: oklch(0.65 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --ring: oklch(0.7 0.15 250);
+  --radius: 16px;
+  --background: #000000;
+  --foreground: #FFFFFF;
+  --card: #1C1C1E;
+  --card-foreground: #FFFFFF;
+  --muted: #3A3A3C;
+  --muted-foreground: #8E8E93;
+  --border: #3A3A3C;
+  --ring: #0A84FF;
 }
