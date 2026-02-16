@@ -123,7 +123,7 @@ export default function HealthDashboard() {
       <div style={secondaryGlowStyle} />
 
       {/* Main Content Container */}
-      <main className="relative z-10 p-5 pt-12 max-w-md mx-auto w-full flex flex-col gap-6">
+      <main className="relative z-10 px-6 pt-14 pb-8 max-w-md mx-auto w-full flex flex-col gap-7">
         
         {/* Header */}
         <header className="flex flex-col gap-1 items-center mb-2">
@@ -155,7 +155,7 @@ export default function HealthDashboard() {
         </div>
 
         {/* Macro Grid */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-5">
           <ProgressRing 
             label="Kalorien" 
             percentage={88} 
@@ -214,7 +214,7 @@ export default function HealthDashboard() {
         </div>
 
         {/* Meals Section */}
-        <div className="flex flex-col gap-3 mt-2">
+        <div className="flex flex-col gap-4 mt-3">
             <div className="flex justify-between items-end px-1">
                 <h2 className="text-xl font-bold text-white">Mahlzeiten heute</h2>
                 <span className="text-sm font-medium text-zinc-400">4 Einträge</span>
