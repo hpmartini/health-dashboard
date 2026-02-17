@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Flame, 
   Dna, 
@@ -9,6 +9,7 @@ import {
   Scale, 
   Utensils, 
   ChevronRight, 
+  ChevronLeft,
   CalendarDays,
   Plus,
   Loader2,
@@ -52,10 +53,11 @@ export default function HealthDashboard() {
   const [activeTab, setActiveTab] = useState('Tag');
   const [data, setData] = useState<NutritionData | null>(null);
   const [loading, setLoading] = useState(true);
+  const dateInputRef = useRef<HTMLInputElement>(null);
   const [selectedDate, setSelectedDate] = useState(() => {
     const now = new Date();
-    const berlinOffset = 1 * 60 * 60 * 1000;
-    const berlinTime = new Date(now.getTime() + berlinOffset);
+    // Get Berlin time
+    const berlinTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
     return berlinTime.toISOString().split('T')[0];
   });
 
@@ -84,12 +86,22 @@ export default function HealthDashboard() {
     return `${days[date.getDay()]}, ${date.getDate()}. ${months[date.getMonth()]}`;
   };
 
+  const changeDate = (days: number) => {
+    const current = new Date(selectedDate + 'T12:00:00');
+    current.setDate(current.getDate() + days);
+    setSelectedDate(current.toISOString().split('T')[0]);
+  };
+
+  const openDatePicker = () => {
+    dateInputRef.current?.showPicker?.();
+    dateInputRef.current?.click();
+  };
+
   // Components
   const MacroCard = ({ title, current, target, unit, color, icon: Icon, percent }: any) => {
     const remaining = target - current;
     const isOver = remaining < 0;
     
-    // Color mapping for Tailwind
     const colorClasses: Record<string, string> = {
       emerald: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
       blue: 'text-blue-400 bg-blue-400/10 border-blue-400/20',
@@ -138,26 +150,56 @@ export default function HealthDashboard() {
   const weight = data?.weight || { current: 78, target: 70 };
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 font-sans selection:bg-indigo-500/30 pb-safe">
+    <div className="min-h-screen bg-black text-zinc-100 font-sans selection:bg-indigo-500/30">
       {/* Abstract Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-20%] left-[-10%] w-[80vw] h-[80vw] rounded-full bg-indigo-600/10 blur-[100px]" />
         <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-rose-600/10 blur-[80px]" />
       </div>
 
-      <div className="relative z-10 max-w-md mx-auto px-6 pt-8 pb-24 space-y-6">
+      {/* Hidden date input */}
+      <input
+        ref={dateInputRef}
+        type="date"
+        value={selectedDate}
+        onChange={(e) => setSelectedDate(e.target.value)}
+        className="sr-only"
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 max-w-md mx-auto px-6 pt-safe pb-safe space-y-6" style={{ paddingTop: 'max(2rem, env(safe-area-inset-top))' }}>
         
         {/* Header */}
-        <header className="flex items-center justify-between px-1">
+        <header className="flex items-center justify-between px-1 pt-2">
           <div>
             <h1 className="text-2xl font-bold text-white tracking-tight">Health Dashboard</h1>
             <p className="text-sm text-zinc-400 mt-1">Übersicht deiner Ziele</p>
           </div>
-          <button className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-zinc-900 border border-white/10 hover:bg-zinc-800 transition-colors shadow-sm">
+          <button 
+            onClick={openDatePicker}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-zinc-900 border border-white/10 hover:bg-zinc-800 active:scale-95 transition-all shadow-sm"
+          >
             <CalendarDays size={16} className="text-indigo-400" />
             <span className="text-xs font-medium text-zinc-300">{formatDate(selectedDate)}</span>
           </button>
         </header>
+
+        {/* Date Navigation */}
+        <div className="flex items-center justify-between px-1">
+          <button 
+            onClick={() => changeDate(-1)}
+            className="p-2 rounded-full hover:bg-white/5 active:scale-95 transition-all"
+          >
+            <ChevronLeft size={20} className="text-zinc-400" />
+          </button>
+          <span className="text-sm text-zinc-500">{selectedDate}</span>
+          <button 
+            onClick={() => changeDate(1)}
+            className="p-2 rounded-full hover:bg-white/5 active:scale-95 transition-all"
+          >
+            <ChevronRight size={20} className="text-zinc-400" />
+          </button>
+        </div>
 
         {/* Tab Switcher */}
         <div className="p-1.5 bg-zinc-900/80 backdrop-blur-md rounded-2xl border border-white/10 grid grid-cols-4 gap-1 shadow-sm">
@@ -251,7 +293,7 @@ export default function HealthDashboard() {
             </div>
 
             {/* Meals Section */}
-            <div className="space-y-3">
+            <div className="space-y-3 pb-8">
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-2">
                   <Activity size={16} className="text-indigo-400" />
@@ -281,7 +323,7 @@ export default function HealthDashboard() {
                         <div className="min-w-0 flex-1">
                           <h4 className="text-sm font-medium text-zinc-200 truncate pr-2">{meal.name}</h4>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs text-zinc-500 font-medium tabular-nums min-w-[32px]">{meal.time}</span>
+                            <span className="text-xs text-zinc-500 font-medium tabular-nums min-w-[40px]">{meal.time}</span>
                             <span className="text-zinc-600 text-[10px]">•</span>
                             <span className="text-xs text-zinc-500 truncate">{meal.macros}</span>
                           </div>
