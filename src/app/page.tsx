@@ -105,10 +105,10 @@ export default function HealthDashboard() {
     };
 
     return (
-      <div className="relative overflow-hidden rounded-2xl bg-zinc-900/60 p-4 border border-white/5 backdrop-blur-xl transition-all active:scale-[0.98]">
-        <div className="flex justify-between items-start mb-3">
-          <div className={`p-2 rounded-xl ${colorClasses[color]}`}>
-            <Icon size={18} strokeWidth={2.5} />
+      <div className="relative overflow-hidden rounded-2xl bg-zinc-900/60 p-5 border border-white/10 backdrop-blur-xl transition-all active:scale-[0.98]">
+        <div className="flex justify-between items-start mb-4">
+          <div className={`p-2.5 rounded-xl ${colorClasses[color]}`}>
+            <Icon size={20} strokeWidth={2.5} />
           </div>
           <div className="text-right">
             <div className="text-xs text-zinc-500 font-medium uppercase tracking-wider">{title}</div>
@@ -145,30 +145,30 @@ export default function HealthDashboard() {
         <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-rose-600/10 blur-[80px]" />
       </div>
 
-      <div className="relative z-10 max-w-md mx-auto px-4 pt-6 pb-24 space-y-6">
+      <div className="relative z-10 max-w-md mx-auto px-6 pt-8 pb-24 space-y-6">
         
         {/* Header */}
-        <header className="flex items-center justify-between">
+        <header className="flex items-center justify-between px-1">
           <div>
             <h1 className="text-2xl font-bold text-white tracking-tight">Health Dashboard</h1>
-            <p className="text-sm text-zinc-400">Übersicht deiner Ziele</p>
+            <p className="text-sm text-zinc-400 mt-1">Übersicht deiner Ziele</p>
           </div>
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-white/10 hover:bg-zinc-800 transition-colors">
-            <CalendarDays size={14} className="text-indigo-400" />
+          <button className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-zinc-900 border border-white/10 hover:bg-zinc-800 transition-colors shadow-sm">
+            <CalendarDays size={16} className="text-indigo-400" />
             <span className="text-xs font-medium text-zinc-300">{formatDate(selectedDate)}</span>
           </button>
         </header>
 
         {/* Tab Switcher */}
-        <div className="p-1 bg-zinc-900/80 backdrop-blur-md rounded-xl border border-white/5 grid grid-cols-4 gap-1">
+        <div className="p-1.5 bg-zinc-900/80 backdrop-blur-md rounded-2xl border border-white/10 grid grid-cols-4 gap-1 shadow-sm">
           {['Tag', 'Woche', 'Monat', 'Jahr'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`py-1.5 text-xs font-medium rounded-lg transition-all duration-200 ${
+              className={`py-2 text-xs font-medium rounded-xl transition-all duration-200 ${
                 activeTab === tab 
-                  ? 'bg-zinc-800 text-white shadow-sm' 
-                  : 'text-zinc-500 hover:text-zinc-300'
+                  ? 'bg-zinc-800 text-white shadow-sm ring-1 ring-white/5' 
+                  : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'
               }`}
             >
               {tab}
@@ -184,33 +184,34 @@ export default function HealthDashboard() {
         ) : (
           <>
             {/* Weight Card */}
-            <div className="group relative overflow-hidden rounded-2xl bg-zinc-900/60 p-5 border border-white/5 backdrop-blur-xl transition-all active:scale-[0.99]">
+            <div className="group relative overflow-hidden rounded-3xl bg-zinc-900/60 p-6 border border-white/10 backdrop-blur-xl transition-all active:scale-[0.99] shadow-sm">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-xl bg-violet-500/10 flex items-center justify-center border border-violet-500/20 group-hover:bg-violet-500/20 transition-colors">
-                    <Scale size={20} className="text-violet-400" />
+                <div className="flex items-center gap-5">
+                  <div className="h-14 w-14 rounded-2xl bg-violet-500/10 flex items-center justify-center border border-violet-500/20 group-hover:bg-violet-500/20 transition-colors shadow-inner">
+                    <Scale size={24} className="text-violet-400" />
                   </div>
                   <div>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-2xl font-bold text-white">{weight.current}</span>
-                      <span className="text-sm text-zinc-500">kg</span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-bold text-white tracking-tight">{weight.current}</span>
+                      <span className="text-base text-zinc-500 font-medium">kg</span>
                     </div>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <TrendingDown size={12} className="text-emerald-400" />
-                      <span className="text-xs text-emerald-400 font-medium">noch {Math.abs(weight.current - weight.target).toFixed(1)} kg</span>
-                      <span className="text-xs text-zinc-600">•</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20">
+                        <TrendingDown size={12} className="text-emerald-400" />
+                        <span className="text-xs text-emerald-400 font-medium">noch {Math.round(Math.abs(weight.current - weight.target))} kg</span>
+                      </div>
                       <span className="text-xs text-zinc-500">Ziel: {weight.target} kg</span>
                     </div>
                   </div>
                 </div>
-                <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer">
-                  <ChevronRight size={18} className="text-zinc-400" />
+                <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer border border-white/5">
+                  <ChevronRight size={20} className="text-zinc-400" />
                 </div>
               </div>
             </div>
 
             {/* Macros Grid */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <MacroCard 
                 title="Kalorien"
                 current={totals.calories}
@@ -261,9 +262,9 @@ export default function HealthDashboard() {
                 </span>
               </div>
 
-              <div className="rounded-2xl bg-zinc-900/60 border border-white/5 backdrop-blur-xl overflow-hidden divide-y divide-white/5">
+              <div className="rounded-2xl bg-zinc-900/60 border border-white/10 backdrop-blur-xl overflow-hidden divide-y divide-white/10">
                 {(!data?.meals || data.meals.length === 0) ? (
-                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="flex flex-col items-center justify-center py-12 text-center p-6">
                     <div className="h-12 w-12 rounded-full bg-zinc-800/50 flex items-center justify-center mb-3">
                       <Utensils size={20} className="text-zinc-600" />
                     </div>
@@ -274,14 +275,14 @@ export default function HealthDashboard() {
                   data.meals.map((meal) => (
                     <div key={meal.id} className="p-4 flex items-center justify-between group hover:bg-white/[0.02] transition-colors">
                       <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="h-10 w-10 rounded-xl bg-zinc-800 flex items-center justify-center flex-shrink-0 border border-white/5">
-                          <span className="text-lg">🍽️</span>
+                        <div className="h-10 w-10 rounded-xl bg-zinc-800 flex items-center justify-center flex-shrink-0 border border-white/10">
+                          <Utensils size={18} className="text-zinc-400" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <h4 className="text-sm font-medium text-zinc-200 truncate pr-2">{meal.name}</h4>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-xs text-zinc-500 font-medium tabular-nums">{meal.time}</span>
-                            <span className="h-0.5 w-0.5 rounded-full bg-zinc-600" />
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-xs text-zinc-500 font-medium tabular-nums min-w-[32px]">{meal.time}</span>
+                            <span className="text-zinc-600 text-[10px]">•</span>
                             <span className="text-xs text-zinc-500 truncate">{meal.macros}</span>
                           </div>
                         </div>
