@@ -10,9 +10,10 @@ import {
   Utensils, 
   ChevronRight, 
   CalendarDays,
-  MoreHorizontal,
   Plus,
-  Loader2
+  Loader2,
+  TrendingDown,
+  Activity
 } from 'lucide-react';
 
 interface Meal {
@@ -53,7 +54,6 @@ export default function HealthDashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(() => {
     const now = new Date();
-    // Adjust for Berlin timezone (UTC+1)
     const berlinOffset = 1 * 60 * 60 * 1000;
     const berlinTime = new Date(now.getTime() + berlinOffset);
     return berlinTime.toISOString().split('T')[0];
@@ -77,164 +77,98 @@ export default function HealthDashboard() {
     fetchData();
   }, [selectedDate]);
 
-  // Format date for display
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr + 'T12:00:00');
-    const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+    const days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
     const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
     return `${days[date.getDay()]}, ${date.getDate()}. ${months[date.getMonth()]}`;
   };
 
-  // Glassmorphism styles
-  const glassCardStyle = {
-    backgroundColor: 'rgba(28, 28, 30, 0.65)',
-    backdropFilter: 'blur(25px)',
-    WebkitBackdropFilter: 'blur(25px)',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
-    boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.3)',
-    borderRadius: '24px',
-  };
-
-  const ambientGlowStyle = {
-    background: 'radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.25), transparent 70%)',
-    position: 'fixed' as const,
-    top: '-15%',
-    left: '-10%',
-    width: '120vw',
-    height: '60vw',
-    minHeight: '600px',
-    filter: 'blur(80px)',
-    zIndex: 0,
-    pointerEvents: 'none' as const,
-  };
-
-  const secondaryGlowStyle = {
-    background: 'radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.15), transparent 60%)',
-    position: 'fixed' as const,
-    bottom: '-10%',
-    right: '-10%',
-    width: '100vw',
-    height: '600px',
-    filter: 'blur(100px)',
-    zIndex: 0,
-    pointerEvents: 'none' as const,
-  };
-
-  // Progress Ring Component
-  const ProgressRing = ({ percentage, color, icon: Icon, value, label, subtext, subLabel }: any) => {
-    const radius = 38;
-    const circumference = 2 * Math.PI * radius;
-    const strokeDashoffset = circumference - (Math.min(percentage, 100) / 100) * circumference;
+  // Components
+  const MacroCard = ({ title, current, target, unit, color, icon: Icon, percent }: any) => {
+    const remaining = target - current;
+    const isOver = remaining < 0;
+    
+    // Color mapping for Tailwind
+    const colorClasses: Record<string, string> = {
+      emerald: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
+      blue: 'text-blue-400 bg-blue-400/10 border-blue-400/20',
+      amber: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
+      rose: 'text-rose-400 bg-rose-400/10 border-rose-400/20',
+    };
+    
+    const barColors: Record<string, string> = {
+      emerald: 'bg-emerald-500',
+      blue: 'bg-blue-500',
+      amber: 'bg-amber-500',
+      rose: 'bg-rose-500',
+    };
 
     return (
-      <div style={glassCardStyle} className="flex flex-col items-center justify-center p-5 relative overflow-hidden min-h-[210px]">
-        {/* Header with proper spacing */}
-        <div className="flex justify-between items-center w-full mb-4 px-1">
-          <span style={{ color: '#E4E4E7', fontSize: '13px', fontWeight: 600, lineHeight: 1 }}>{label}</span>
-          <span style={{ color: percentage > 100 ? '#EF4444' : '#71717A', fontSize: '12px', fontWeight: 500, lineHeight: 1 }}>
-            {percentage}%
-          </span>
-        </div>
-
-        {/* Ring */}
-        <div className="relative flex items-center justify-center mb-3">
-          <svg width="100" height="100" className="transform -rotate-90">
-            <circle
-              cx="50"
-              cy="50"
-              r={radius}
-              stroke="rgba(255,255,255,0.1)"
-              strokeWidth="8"
-              fill="transparent"
-            />
-            <circle
-              cx="50"
-              cy="50"
-              r={radius}
-              stroke={color}
-              strokeWidth="8"
-              fill="transparent"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              strokeLinecap="round"
-              style={{ transition: 'stroke-dashoffset 1s ease-in-out' }}
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Icon size={24} color={color} strokeWidth={2.5} />
+      <div className="relative overflow-hidden rounded-2xl bg-zinc-900/60 p-4 border border-white/5 backdrop-blur-xl transition-all active:scale-[0.98]">
+        <div className="flex justify-between items-start mb-3">
+          <div className={`p-2 rounded-xl ${colorClasses[color]}`}>
+            <Icon size={18} strokeWidth={2.5} />
+          </div>
+          <div className="text-right">
+            <div className="text-xs text-zinc-500 font-medium uppercase tracking-wider">{title}</div>
+            <div className={`text-xs font-medium ${isOver ? 'text-rose-400' : 'text-zinc-400'}`}>
+              {Math.abs(remaining)}{unit} {isOver ? 'drüber' : 'übrig'}
+            </div>
           </div>
         </div>
-
-        {/* Stats */}
-        <div className="text-center">
-          <div style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 700 }}>
-            {value}
-          </div>
-          <div style={{ color: '#A1A1AA', fontSize: '11px', marginTop: '4px' }}>
-            {subtext}
-          </div>
-          <div style={{ color: color, fontSize: '11px', marginTop: '2px', fontWeight: 500 }}>
-            {subLabel}
-          </div>
+        
+        <div className="flex items-end gap-1.5 mb-2">
+          <span className="text-2xl font-bold text-white tracking-tight">{current}</span>
+          <span className="text-sm text-zinc-500 font-medium mb-1">/ {target}{unit}</span>
+        </div>
+        
+        <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+          <div 
+            className={`h-full rounded-full ${barColors[color]} transition-all duration-1000 ease-out`}
+            style={{ width: `${Math.min(percent, 100)}%` }}
+          />
         </div>
       </div>
     );
   };
 
-  // Calculate percentages and remaining
   const targets = data?.targets || { calories: 2000, protein: 150, carbs: 200, fat: 70 };
   const totals = data?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0 };
   const weight = data?.weight || { current: 78, target: 70 };
 
-  const calPercent = Math.round((totals.calories / targets.calories) * 100);
-  const proteinPercent = Math.round((totals.protein / targets.protein) * 100);
-  const carbPercent = Math.round((totals.carbs / targets.carbs) * 100);
-  const fatPercent = Math.round((totals.fat / targets.fat) * 100);
-
-  const calRemaining = targets.calories - totals.calories;
-  const proteinRemaining = targets.protein - totals.protein;
-  const carbRemaining = targets.carbs - totals.carbs;
-  const fatRemaining = targets.fat - totals.fat;
-
   return (
-    <div 
-      className="min-h-screen w-full relative flex flex-col font-sans"
-      style={{ backgroundColor: '#000000', color: '#fff', paddingBottom: '120px' }}
-    >
-      {/* Ambient Backgrounds */}
-      <div style={ambientGlowStyle} />
-      <div style={secondaryGlowStyle} />
+    <div className="min-h-screen bg-black text-zinc-100 font-sans selection:bg-indigo-500/30 pb-safe">
+      {/* Abstract Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-20%] left-[-10%] w-[80vw] h-[80vw] rounded-full bg-indigo-600/10 blur-[100px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-rose-600/10 blur-[80px]" />
+      </div>
 
-      {/* Main Content */}
-      <main className="relative z-10 px-4 pt-8 pb-8 max-w-md mx-auto w-full flex flex-col gap-5">
+      <div className="relative z-10 max-w-md mx-auto px-4 pt-6 pb-24 space-y-6">
         
         {/* Header */}
-        <header className="text-center mb-2">
-          <h1 className="text-2xl font-bold tracking-tight text-white mb-3">Health Dashboard</h1>
-          <div 
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full" 
-            style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-          >
-            <CalendarDays size={14} className="text-zinc-400" />
-            <span className="text-xs font-medium text-zinc-300 uppercase tracking-wide">
-              {formatDate(selectedDate)}
-            </span>
+        <header className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Health Dashboard</h1>
+            <p className="text-sm text-zinc-400">Übersicht deiner Ziele</p>
           </div>
+          <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-white/10 hover:bg-zinc-800 transition-colors">
+            <CalendarDays size={14} className="text-indigo-400" />
+            <span className="text-xs font-medium text-zinc-300">{formatDate(selectedDate)}</span>
+          </button>
         </header>
 
-        {/* Tabs */}
-        <div 
-          className="grid grid-cols-4 p-1 rounded-xl"
-          style={{ backgroundColor: 'rgba(113, 113, 122, 0.25)', border: '1px solid rgba(255,255,255,0.05)' }}
-        >
+        {/* Tab Switcher */}
+        <div className="p-1 bg-zinc-900/80 backdrop-blur-md rounded-xl border border-white/5 grid grid-cols-4 gap-1">
           {['Tag', 'Woche', 'Monat', 'Jahr'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`text-xs font-semibold py-2 rounded-lg transition-all duration-300 ${
+              className={`py-1.5 text-xs font-medium rounded-lg transition-all duration-200 ${
                 activeTab === tab 
-                  ? 'bg-zinc-800 text-white shadow-lg' 
-                  : 'text-zinc-400 hover:text-zinc-200'
+                  ? 'bg-zinc-800 text-white shadow-sm' 
+                  : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
               {tab}
@@ -242,140 +176,136 @@ export default function HealthDashboard() {
           ))}
         </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="animate-spin text-zinc-400" size={32} />
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20 space-y-4">
+            <Loader2 className="animate-spin text-indigo-500" size={32} />
+            <p className="text-sm text-zinc-500">Lade Daten...</p>
           </div>
-        )}
-
-        {/* Macro Grid */}
-        {!loading && (
-          <div className="grid grid-cols-2 gap-3">
-            <ProgressRing 
-              label="Kalorien" 
-              percentage={calPercent} 
-              color="#34D399"
-              icon={Flame} 
-              value={`${totals.calories} / ${targets.calories}`}
-              subtext="kcal gesamt"
-              subLabel={calRemaining >= 0 ? `${calRemaining} übrig` : `${Math.abs(calRemaining)} drüber`}
-            />
-            <ProgressRing 
-              label="Protein" 
-              percentage={proteinPercent} 
-              color="#3B82F6"
-              icon={Dna} 
-              value={`${totals.protein} / ${targets.protein}g`}
-              subtext="konsumiert"
-              subLabel={proteinRemaining >= 0 ? `${proteinRemaining}g übrig` : `${Math.abs(proteinRemaining)}g drüber`}
-            />
-            <ProgressRing 
-              label="Kohlenhydrate" 
-              percentage={carbPercent} 
-              color="#F59E0B"
-              icon={Wheat} 
-              value={`${totals.carbs} / ${targets.carbs}g`}
-              subtext="konsumiert"
-              subLabel={carbRemaining >= 0 ? `${carbRemaining}g übrig` : `${Math.abs(carbRemaining)}g drüber`}
-            />
-            <ProgressRing 
-              label="Fett" 
-              percentage={fatPercent} 
-              color="#EF4444"
-              icon={Droplet} 
-              value={`${totals.fat} / ${targets.fat}g`}
-              subtext="konsumiert"
-              subLabel={fatRemaining >= 0 ? `${fatRemaining}g übrig` : `${Math.abs(fatRemaining)}g drüber`}
-            />
-          </div>
-        )}
-
-        {/* Weight Card */}
-        {!loading && (
-          <div style={glassCardStyle} className="p-5 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div 
-                className="w-12 h-12 rounded-full flex items-center justify-center" 
-                style={{ backgroundColor: 'rgba(168, 85, 247, 0.2)' }}
-              >
-                <Scale size={22} color="#A855F7" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-white text-lg">Gewicht</h3>
-                <p className="text-zinc-400 text-sm">Ziel: {weight.target} kg</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-white">
-                {weight.current}<span className="text-base text-zinc-400 ml-0.5">kg</span>
-              </div>
-              <div className="text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 inline-block mt-1">
-                noch {weight.current - weight.target} kg
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Meals Section */}
-        {!loading && (
-          <div className="flex flex-col gap-4 mt-2">
-            <div className="flex justify-between items-end px-1">
-              <h2 className="text-lg font-bold text-white">Mahlzeiten heute</h2>
-              <span className="text-sm font-medium text-zinc-400">
-                {data?.meals?.length || 0} {(data?.meals?.length || 0) === 1 ? 'Eintrag' : 'Einträge'}
-              </span>
-            </div>
-
-            <div style={glassCardStyle} className="flex flex-col overflow-hidden">
-              {(!data?.meals || data.meals.length === 0) ? (
-                <div className="p-6 text-center text-zinc-400">
-                  <Utensils size={32} className="mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">Noch keine Mahlzeiten erfasst</p>
-                </div>
-              ) : (
-                data.meals.map((meal, idx) => (
-                  <div 
-                    key={meal.id}
-                    className={`p-4 flex items-center justify-between ${
-                      idx < data.meals.length - 1 ? 'border-b border-white/5' : ''
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div 
-                        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" 
-                        style={{ backgroundColor: 'rgba(59, 130, 246, 0.15)' }}
-                      >
-                        <Utensils size={18} className="text-blue-400" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="font-medium text-white truncate">{meal.name}</div>
-                        <div className="text-xs text-zinc-400 mt-0.5 flex items-center gap-2 flex-wrap">
-                          <span>{meal.time} Uhr</span>
-                          <span className="w-1 h-1 rounded-full bg-zinc-600 flex-shrink-0"></span>
-                          <span className="text-zinc-300 truncate">{meal.macros}</span>
-                        </div>
-                      </div>
+        ) : (
+          <>
+            {/* Weight Card */}
+            <div className="group relative overflow-hidden rounded-2xl bg-zinc-900/60 p-5 border border-white/5 backdrop-blur-xl transition-all active:scale-[0.99]">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-violet-500/10 flex items-center justify-center border border-violet-500/20 group-hover:bg-violet-500/20 transition-colors">
+                    <Scale size={20} className="text-violet-400" />
+                  </div>
+                  <div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-2xl font-bold text-white">{weight.current}</span>
+                      <span className="text-sm text-zinc-500">kg</span>
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                      <span className="font-bold text-white">
-                        {meal.calories} <span className="text-xs font-normal text-zinc-500">kcal</span>
-                      </span>
-                      <ChevronRight size={16} className="text-zinc-600" />
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <TrendingDown size={12} className="text-emerald-400" />
+                      <span className="text-xs text-emerald-400 font-medium">noch {Math.abs(weight.current - weight.target).toFixed(1)} kg</span>
+                      <span className="text-xs text-zinc-600">•</span>
+                      <span className="text-xs text-zinc-500">Ziel: {weight.target} kg</span>
                     </div>
                   </div>
-                ))
-              )}
-              
-              {/* Add Button */}
-              <div className="p-3 bg-white/5 flex justify-center items-center hover:bg-white/10 transition-colors cursor-pointer">
-                <Plus size={20} className="text-zinc-400" />
+                </div>
+                <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer">
+                  <ChevronRight size={18} className="text-zinc-400" />
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </main>
 
+            {/* Macros Grid */}
+            <div className="grid grid-cols-2 gap-3">
+              <MacroCard 
+                title="Kalorien"
+                current={totals.calories}
+                target={targets.calories}
+                unit=""
+                color="emerald"
+                icon={Flame}
+                percent={(totals.calories / targets.calories) * 100}
+              />
+              <MacroCard 
+                title="Protein"
+                current={totals.protein}
+                target={targets.protein}
+                unit="g"
+                color="blue"
+                icon={Dna}
+                percent={(totals.protein / targets.protein) * 100}
+              />
+              <MacroCard 
+                title="Carbs"
+                current={totals.carbs}
+                target={targets.carbs}
+                unit="g"
+                color="amber"
+                icon={Wheat}
+                percent={(totals.carbs / targets.carbs) * 100}
+              />
+              <MacroCard 
+                title="Fett"
+                current={totals.fat}
+                target={targets.fat}
+                unit="g"
+                color="rose"
+                icon={Droplet}
+                percent={(totals.fat / targets.fat) * 100}
+              />
+            </div>
+
+            {/* Meals Section */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div className="flex items-center gap-2">
+                  <Activity size={16} className="text-indigo-400" />
+                  <h3 className="text-sm font-semibold text-zinc-200">Mahlzeiten</h3>
+                </div>
+                <span className="px-2 py-0.5 rounded-md bg-zinc-800 border border-white/5 text-[10px] font-medium text-zinc-400">
+                  {data?.meals?.length || 0} Einträge
+                </span>
+              </div>
+
+              <div className="rounded-2xl bg-zinc-900/60 border border-white/5 backdrop-blur-xl overflow-hidden divide-y divide-white/5">
+                {(!data?.meals || data.meals.length === 0) ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <div className="h-12 w-12 rounded-full bg-zinc-800/50 flex items-center justify-center mb-3">
+                      <Utensils size={20} className="text-zinc-600" />
+                    </div>
+                    <p className="text-sm text-zinc-400 font-medium">Keine Mahlzeiten</p>
+                    <p className="text-xs text-zinc-600 mt-1">Tippe auf +, um zu starten</p>
+                  </div>
+                ) : (
+                  data.meals.map((meal) => (
+                    <div key={meal.id} className="p-4 flex items-center justify-between group hover:bg-white/[0.02] transition-colors">
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        <div className="h-10 w-10 rounded-xl bg-zinc-800 flex items-center justify-center flex-shrink-0 border border-white/5">
+                          <span className="text-lg">🍽️</span>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="text-sm font-medium text-zinc-200 truncate pr-2">{meal.name}</h4>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-xs text-zinc-500 font-medium tabular-nums">{meal.time}</span>
+                            <span className="h-0.5 w-0.5 rounded-full bg-zinc-600" />
+                            <span className="text-xs text-zinc-500 truncate">{meal.macros}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right pl-2">
+                        <div className="text-sm font-bold text-white tabular-nums">{meal.calories}</div>
+                        <div className="text-[10px] text-zinc-500 font-medium">kcal</div>
+                      </div>
+                    </div>
+                  ))
+                )}
+                
+                {/* Add Button */}
+                <button className="w-full py-3 flex items-center justify-center gap-2 bg-white/[0.02] hover:bg-white/[0.05] transition-colors text-xs font-medium text-zinc-400 hover:text-white group">
+                  <div className="h-5 w-5 rounded-md bg-zinc-800 border border-white/10 flex items-center justify-center group-hover:border-white/20 transition-colors">
+                    <Plus size={12} />
+                  </div>
+                  Eintrag hinzufügen
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
