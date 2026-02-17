@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Flame, 
@@ -58,7 +58,6 @@ export default function Dashboard({ initialData, initialDate }: DashboardProps) 
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('Tag');
   const [selectedDate, setSelectedDate] = useState(initialDate);
-  const dateInputRef = useRef<HTMLInputElement>(null);
   
   // Data comes from server - no loading state needed on initial render
   const data = initialData;
@@ -82,11 +81,6 @@ export default function Dashboard({ initialData, initialDate }: DashboardProps) 
     const newDate = e.target.value;
     setSelectedDate(newDate);
     router.push(`/?date=${newDate}`);
-  };
-
-  const openDatePicker = () => {
-    dateInputRef.current?.showPicker?.();
-    dateInputRef.current?.click();
   };
 
   const MacroCard = ({ title, current, target, unit, color, icon: Icon, percent }: any) => {
@@ -148,16 +142,6 @@ export default function Dashboard({ initialData, initialDate }: DashboardProps) 
         <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-rose-600/10 blur-[80px]" />
       </div>
 
-      {/* Hidden date input */}
-      <input
-        ref={dateInputRef}
-        type="date"
-        value={selectedDate}
-        onChange={handleDateChange}
-        className="sr-only"
-        aria-hidden="true"
-      />
-
       <div className="relative z-10 max-w-md mx-auto px-6 pt-safe pb-safe space-y-6" style={{ paddingTop: 'max(2rem, env(safe-area-inset-top))' }}>
         
         {/* Header */}
@@ -166,13 +150,16 @@ export default function Dashboard({ initialData, initialDate }: DashboardProps) 
             <h1 className="text-2xl font-bold text-white tracking-tight">Health Dashboard</h1>
             <p className="text-sm text-zinc-400 mt-1">Übersicht deiner Ziele</p>
           </div>
-          <button 
-            onClick={openDatePicker}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-zinc-900 border border-white/10 hover:bg-zinc-800 active:scale-95 transition-all shadow-sm"
-          >
+          <label className="relative flex items-center gap-2 px-3.5 py-2 rounded-full bg-zinc-900 border border-white/10 hover:bg-zinc-800 active:scale-95 transition-all shadow-sm cursor-pointer">
             <CalendarDays size={16} className="text-indigo-400" />
             <span className="text-xs font-medium text-zinc-300">{formatDate(selectedDate)}</span>
-          </button>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={handleDateChange}
+              className="absolute inset-0 opacity-0 cursor-pointer"
+            />
+          </label>
         </header>
 
         {/* Date Navigation */}
