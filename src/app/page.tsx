@@ -206,17 +206,17 @@ export default function HealthDashboard() {
       <div style={secondaryGlowStyle} />
 
       {/* Main Content */}
-      <main className="relative z-10 px-4 pt-14 pb-8 max-w-md mx-auto w-full flex flex-col gap-6">
+      <main className="relative z-10 px-4 pt-8 pb-8 max-w-md mx-auto w-full flex flex-col gap-5">
         
         {/* Header */}
-        <header className="flex flex-col gap-3 items-center mb-4">
-          <h1 className="text-2xl font-bold tracking-tight text-white">Health Dashboard</h1>
+        <header className="text-center mb-2">
+          <h1 className="text-2xl font-bold tracking-tight text-white mb-3">Health Dashboard</h1>
           <div 
-            className="flex items-center gap-2 px-4 py-2 rounded-full" 
-            style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full" 
+            style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
           >
-            <CalendarDays size={14} className="text-zinc-400 flex-shrink-0" />
-            <span className="text-xs font-medium text-zinc-300 uppercase tracking-wide whitespace-nowrap">
+            <CalendarDays size={14} className="text-zinc-400" />
+            <span className="text-xs font-medium text-zinc-300 uppercase tracking-wide">
               {formatDate(selectedDate)}
             </span>
           </div>
@@ -376,16 +376,6 @@ export default function HealthDashboard() {
         )}
       </main>
 
-      {/* Floating Navigation */}
-      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-        <div style={{ ...glassCardStyle, borderRadius: '50px', padding: '8px 20px' }} className="flex items-center gap-6">
-          <CalendarDays size={24} className="text-zinc-400" />
-          <div className="bg-blue-600 p-3 rounded-full shadow-lg shadow-blue-600/30 -mt-8 border-4 border-black">
-            <Plus size={24} color="white" />
-          </div>
-          <MoreHorizontal size={24} className="text-zinc-400" />
-        </div>
-      </div>
     </div>
   );
 }
