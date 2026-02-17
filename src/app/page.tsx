@@ -127,11 +127,11 @@ export default function HealthDashboard() {
     const strokeDashoffset = circumference - (Math.min(percentage, 100) / 100) * circumference;
 
     return (
-      <div style={glassCardStyle} className="flex flex-col items-center justify-center p-4 relative overflow-hidden min-h-[200px]">
+      <div style={glassCardStyle} className="flex flex-col items-center justify-center p-5 relative overflow-hidden min-h-[210px]">
         {/* Header with proper spacing */}
-        <div className="flex justify-between w-full mb-3">
-          <span style={{ color: '#E4E4E7', fontSize: '14px', fontWeight: 600 }}>{label}</span>
-          <span style={{ color: percentage > 100 ? '#EF4444' : '#A1A1AA', fontSize: '12px', fontWeight: 500 }}>
+        <div className="flex justify-between items-center w-full mb-4 px-1">
+          <span style={{ color: '#E4E4E7', fontSize: '13px', fontWeight: 600, lineHeight: 1 }}>{label}</span>
+          <span style={{ color: percentage > 100 ? '#EF4444' : '#71717A', fontSize: '12px', fontWeight: 500, lineHeight: 1 }}>
             {percentage}%
           </span>
         </div>
@@ -209,17 +209,17 @@ export default function HealthDashboard() {
       <main className="relative z-10 px-4 pt-14 pb-8 max-w-md mx-auto w-full flex flex-col gap-6">
         
         {/* Header */}
-        <header className="flex flex-col gap-2 items-center mb-2">
+        <header className="flex flex-col gap-3 items-center mb-4">
+          <h1 className="text-2xl font-bold tracking-tight text-white">Health Dashboard</h1>
           <div 
             className="flex items-center gap-2 px-4 py-2 rounded-full" 
             style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}
           >
-            <CalendarDays size={14} className="text-zinc-400" />
-            <span className="text-xs font-medium text-zinc-300 uppercase tracking-wide">
+            <CalendarDays size={14} className="text-zinc-400 flex-shrink-0" />
+            <span className="text-xs font-medium text-zinc-300 uppercase tracking-wide whitespace-nowrap">
               {formatDate(selectedDate)}
             </span>
           </div>
-          <h1 className="text-2xl font-bold mt-2 tracking-tight text-white">Health Dashboard</h1>
         </header>
 
         {/* Tabs */}
@@ -251,7 +251,7 @@ export default function HealthDashboard() {
 
         {/* Macro Grid */}
         {!loading && (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <ProgressRing 
               label="Kalorien" 
               percentage={calPercent} 
