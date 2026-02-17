@@ -44,5 +44,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  // Exclude PWA assets from auth so iOS can install the app
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|favicon-.*|manifest.json|icons/.*).*)'],
 }
