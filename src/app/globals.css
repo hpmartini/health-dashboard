@@ -1,139 +1,38 @@
-@tailwind base;
-
-@plugin "tailwindcss-animate";
-
-@custom-variant dark (&:is(.dark *));
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* ============================================
-   HEALTH DASHBOARD - FIXED DARK MODE
-   iOS-Style Dark Mode with proper contrast
+   HEALTH DASHBOARD - Tailwind v4 CSS
    ============================================ */
 
+/* Tailwind v4: Content paths via @source */
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
+
+/* Custom theme tokens */
+@theme {
+  --color-background: #000000;
+  --color-foreground: #ffffff;
+  --color-card: #1c1c1e;
+  --color-card-foreground: #ffffff;
+  --color-muted: #3a3a3c;
+  --color-muted-foreground: #8e8e93;
+  --color-border: #3a3a3c;
+  --radius: 16px;
+}
+
+/* Base styles */
 body {
   font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
   min-height: 100vh;
-  /* Pure black background like iOS */
   background-color: #000000;
-  color: #FFFFFF;
-  /* Safe area padding for mobile browsers */
-  padding-bottom: env(safe-area-inset-bottom, 100px);
+  color: #ffffff;
 }
 
-/* iOS-Style Cards - Dark gray on black */
-.card {
-  background-color: #1C1C1E;
-  border-radius: 16px;
-  border: none;
+/* Safe area for mobile */
+.pb-safe {
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
-/* Macro Card Variants with subtle color tint */
-.card-calories {
-  background: linear-gradient(135deg, #1a2f1a 0%, #1C1C1E 100%);
-}
-
-.card-protein {
-  background: linear-gradient(135deg, #1a1a2f 0%, #1C1C1E 100%);
-}
-
-.card-carbs {
-  background: linear-gradient(135deg, #2f2a1a 0%, #1C1C1E 100%);
-}
-
-.card-fat {
-  background: linear-gradient(135deg, #2f1a1a 0%, #1C1C1E 100%);
-}
-
-.card-weight {
-  background: linear-gradient(135deg, #251a2f 0%, #1C1C1E 100%);
-}
-
-/* Text Colors - WHITE on dark */
-.text-primary {
-  color: #FFFFFF;
-}
-
-.text-secondary {
-  color: #8E8E93;
-}
-
-.text-tertiary {
-  color: #636366;
-}
-
-/* Accent Colors */
-.accent-green { color: #30D158; }
-.accent-blue { color: #0A84FF; }
-.accent-orange { color: #FF9F0A; }
-.accent-red { color: #FF453A; }
-.accent-purple { color: #BF5AF2; }
-
-/* Progress Ring Colors */
-.ring-green { stroke: #30D158; }
-.ring-blue { stroke: #0A84FF; }
-.ring-orange { stroke: #FF9F0A; }
-.ring-red { stroke: #FF453A; }
-
-/* Progress Ring */
-.progress-ring {
-  transform: rotate(-90deg);
-}
-
-.progress-ring circle {
-  transition: stroke-dashoffset 0.6s ease-out;
-}
-
-/* Segmented Control - Dark Mode Style */
-.segmented-control {
-  background-color: #1C1C1E;
-  border-radius: 10px;
-  padding: 2px;
-}
-
-.segmented-control button {
-  color: #8E8E93;
-  border-radius: 8px;
-  padding: 8px 16px;
-  transition: all 0.2s ease;
-}
-
-.segmented-control button.active {
-  background-color: #3A3A3C;
-  color: #FFFFFF;
-}
-
-/* List Items */
-.list-item {
-  background-color: #1C1C1E;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 8px;
-}
-
-.list-item:active {
-  background-color: #2C2C2E;
-}
-
-/* Progress Bar */
-.progress-track {
-  background-color: #3A3A3C;
-  border-radius: 4px;
-  height: 8px;
-}
-
-.progress-fill {
-  border-radius: 4px;
-  height: 100%;
-  transition: width 0.5s ease-out;
-}
-
-.progress-fill-green { background-color: #30D158; }
-.progress-fill-blue { background-color: #0A84FF; }
-.progress-fill-orange { background-color: #FF9F0A; }
-.progress-fill-red { background-color: #FF453A; }
-
-/* Scrollbar - Minimal */
+/* Minimal scrollbar */
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -143,37 +42,6 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3A3A3C;
+  background: #3a3a3c;
   border-radius: 2px;
-}
-
-/* Safe Area Utility */
-.pb-safe {
-  padding-bottom: max(24px, env(safe-area-inset-bottom));
-}
-
-/* Theme Variables for shadcn */
-@theme inline {
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --color-background: #000000;
-  --color-foreground: #FFFFFF;
-  --color-card: #1C1C1E;
-  --color-card-foreground: #FFFFFF;
-  --color-muted: #3A3A3C;
-  --color-muted-foreground: #8E8E93;
-  --color-border: #3A3A3C;
-}
-
-:root {
-  --radius: 16px;
-  --background: #000000;
-  --foreground: #FFFFFF;
-  --card: #1C1C1E;
-  --card-foreground: #FFFFFF;
-  --muted: #3A3A3C;
-  --muted-foreground: #8E8E93;
-  --border: #3A3A3C;
-  --ring: #0A84FF;
 }
