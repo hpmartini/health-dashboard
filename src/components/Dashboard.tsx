@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { format } from 'date-fns';
 import { 
   Flame, 
   Dna, 
@@ -65,14 +66,14 @@ export default function Dashboard({ initialData, initialDate }: DashboardProps) 
   const changeDate = (days: number) => {
     const current = new Date(selectedDate + 'T12:00:00');
     current.setDate(current.getDate() + days);
-    const newDate = current.toISOString().split('T')[0];
+    const newDate = format(current, 'yyyy-MM-dd');
     setSelectedDate(newDate);
     router.push(`/?date=${newDate}`);
   };
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      const newDate = date.toISOString().split('T')[0];
+      const newDate = format(date, 'yyyy-MM-dd');
       setSelectedDate(newDate);
       router.push(`/?date=${newDate}`);
     }
