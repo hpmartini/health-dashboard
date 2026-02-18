@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "react-day-picker/style.css";
 
 /* ============================================
    HEALTH DASHBOARD - Tailwind v4 CSS
