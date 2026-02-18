@@ -55,7 +55,7 @@ export function middleware(request: NextRequest) {
   response.cookies.set(SESSION_COOKIE, SESSION_VALUE, {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict',
+    sameSite: 'lax',
     maxAge: SESSION_MAX_AGE,
     path: '/',
   })
