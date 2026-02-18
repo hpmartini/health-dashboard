@@ -11,11 +11,11 @@ import {
   Utensils, 
   ChevronRight, 
   ChevronLeft,
-  CalendarDays,
   Plus,
   TrendingDown,
   Activity
 } from 'lucide-react';
+import { DatePicker } from '@/components/ui/date-picker';
 
 interface Meal {
   id: number;
@@ -62,13 +62,6 @@ export default function Dashboard({ initialData, initialDate }: DashboardProps) 
   // Data comes from server - no loading state needed on initial render
   const data = initialData;
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr + 'T12:00:00');
-    const days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
-    const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
-    return `${days[date.getDay()]}, ${date.getDate()}. ${months[date.getMonth()]}`;
-  };
-
   const changeDate = (days: number) => {
     const current = new Date(selectedDate + 'T12:00:00');
     current.setDate(current.getDate() + days);
@@ -77,11 +70,16 @@ export default function Dashboard({ initialData, initialDate }: DashboardProps) 
     router.push(`/?date=${newDate}`);
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = e.target.value;
-    setSelectedDate(newDate);
-    router.push(`/?date=${newDate}`);
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      const newDate = date.toISOString().split('T')[0];
+      setSelectedDate(newDate);
+      router.push(`/?date=${newDate}`);
+    }
   };
+
+  // Convert selectedDate string to Date object for DatePicker
+  const selectedDateObj = new Date(selectedDate + 'T12:00:00');
 
   const MacroCard = ({ title, current, target, unit, color, icon: Icon, percent }: any) => {
     const remaining = target - current;
@@ -150,16 +148,10 @@ export default function Dashboard({ initialData, initialDate }: DashboardProps) 
             <h1 className="text-2xl font-bold text-white tracking-tight">Health Dashboard</h1>
             <p className="text-sm text-zinc-400 mt-1">Übersicht deiner Ziele</p>
           </div>
-          <label className="relative flex items-center gap-2 px-3.5 py-2 rounded-full bg-zinc-900 border border-white/10 hover:bg-zinc-800 active:scale-95 transition-all shadow-sm cursor-pointer">
-            <CalendarDays size={16} className="text-indigo-400" />
-            <span className="text-xs font-medium text-zinc-300">{formatDate(selectedDate)}</span>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={handleDateChange}
-              className="absolute inset-0 opacity-0 cursor-pointer"
-            />
-          </label>
+          <DatePicker 
+            date={selectedDateObj} 
+            onDateChange={handleDateSelect}
+          />
         </header>
 
         {/* Date Navigation */}
